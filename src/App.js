@@ -10,9 +10,9 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <Route path="/signup" component={signUp} />
-        <Route path="/signin" component={signIn} />
-        <Route path="/addressbook" component={addressBook} />
+        <Route strict path="/signup" component={signUp} />
+        <Route strict path="/signin" component={signIn} />
+        <Route strict path="/addressbook" component={addressBook} />
       </BrowserRouter>
     )
   }

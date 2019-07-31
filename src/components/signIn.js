@@ -20,7 +20,7 @@ const styles = {
     },
     avatar: {
         margin: 2,
-        backgroundColor: '#196bd4',
+        backgroundColor: '#0571d6',
     },
     form: {
         width: '100%',
@@ -28,7 +28,10 @@ const styles = {
     },
     submit: {
         marginTop: 7,
-        backgroundColor: '#196bd4'
+        backgroundColor: '#077ce8',
+        '&:hover': {
+            backgroundColor: '#0571d6'
+        }
     },
     link: {
         marginTop: 10,
