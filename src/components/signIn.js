@@ -3,11 +3,9 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Person from '@material-ui/icons/Person';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -15,13 +13,13 @@ import Container from '@material-ui/core/Container';
 
 const styles = {
     paper: {
-        marginTop: 40,
+        marginTop: 80,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
     avatar: {
-        margin: 5,
+        margin: 2,
         backgroundColor: '#196bd4',
     },
     form: {
@@ -48,7 +46,7 @@ class signIn extends Component {
     }
 
     inputChecker = (value, option) => {
-        if (option == 'username') {
+        if (option === 'username') {
             this.setState({
                 username: value,
             })
@@ -68,7 +66,7 @@ class signIn extends Component {
                 <CssBaseline />
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
+                        <Person />
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Sign in
@@ -82,8 +80,8 @@ class signIn extends Component {
                             fullWidth
                             id="email"
                             label="Email Address"
-                            error={this.state.username == '' ? true : false}
-                            helperText={this.state.username == '' ? 'Username is required' : ' '}
+                            error={this.state.username === '' ? true : false}
+                            helperText={this.state.username === '' ? 'Username is required' : ' '}
                             InputLabelProps={{ required: false }}
                             onBlur={e => this.inputChecker(e.target.value, 'username')}
                             onChange={e => this.inputChecker(e.target.value, 'username')}
@@ -97,8 +95,8 @@ class signIn extends Component {
                             label="Password"
                             type="password"
                             id="password"
-                            error={this.state.password == '' ? true : false}
-                            helperText={this.state.password == '' ? 'Password is required' : ' '}
+                            error={this.state.password === '' ? true : false}
+                            helperText={this.state.password === '' ? 'Password is required' : ' '}
                             InputLabelProps={{ required: false }}
                             onBlur={e => this.inputChecker(e.target.value, 'password')}
                             onChange={e => this.inputChecker(e.target.value, 'password')}
