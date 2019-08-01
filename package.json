@@ -17,7 +17,8 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-toastify": "^5.3.2",
-    "save": "^2.4.0"
+    "save": "^2.4.0",
+    "simple-flexbox": "^2.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
