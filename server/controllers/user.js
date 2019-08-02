@@ -1,15 +1,26 @@
+const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
+const secret = require('../../secret');
+
 module.exports = {
     register: (req, res) => {
         const db = req.app.get('db')
 
         const { firstName, lastName, email, username, password } = req.body
 
-        db.users
-            .insert({
-                username,
-                password,
-            }
-            )
+
+        argon2
+            .hash(password)
+            .then((hash) => {
+                return db.users
+                    .insert({
+                        username,
+                        password: hash
+                    },{
+                        fields: [ 'id', 'username']
+                    }
+                    )
+            })
             .then(user => {
                 db.users_profile
                     .insert({
@@ -17,10 +28,19 @@ module.exports = {
                         lname: lastName,
                         email
                     })
-                res.status(201).json(user)
+            .then(
+                db.address_book
+                    .insert({
+                        user_id: user.id
+                    })
+            )
+                console.log(user)
+                const token = jwt.sign({ userId: user.id }, secret);
+                res.status(201).json({ ...user, token });
             })
             .catch(err => {
                 console.error(err);
+                res.status(500).end();
             });
     }
 }

@@ -9,6 +9,7 @@
     "express": "^4.17.1",
     "flexbox-react": "^4.4.0",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^2.2.0",
     "massive": "^5.11.2",
     "node-pg-migrate": "^3.21.1",
     "pg": "^7.12.0",

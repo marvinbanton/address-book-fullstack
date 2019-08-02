@@ -8,36 +8,8 @@ import Grid from '@material-ui/core/Grid';
 import Person from '@material-ui/icons/Person';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import styles from './styles/signInStyles';
 import Container from '@material-ui/core/Container';
-
-
-const styles = {
-    paper: {
-        marginTop: 80,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    avatar: {
-        margin: 2,
-        backgroundColor: '#0571d6',
-    },
-    form: {
-        width: '100%',
-        marginTop: 18,
-    },
-    submit: {
-        marginTop: 7,
-        backgroundColor: '#077ce8',
-        '&:hover': {
-            backgroundColor: '#0571d6'
-        }
-    },
-    link: {
-        marginTop: 10,
-    }
-};
-
 
 class signIn extends Component {
     constructor() {

@@ -1,9 +1,9 @@
-const styles = {
+const styles = theme => ({
     root: {
         flexGrow: 1,
     },
     navbar: {
-        backgroundColor: '#092d63',
+        backgroundColor: '#094571',
     },
     menuButton: {
         marginRight: 2,
@@ -36,7 +36,7 @@ const styles = {
         overflow: 'auto',
     },
     table: {
-        minWidth: 1190,
+        minWidth: 1210,
     },
     addUser: {
         marginRight: 2,
@@ -45,7 +45,10 @@ const styles = {
             backgroundColor: '#0571d6'
         }
     },
+    textfield: {
+        marginRight: theme.spacing(2),
+    }
 
-};
+});
 
 export default styles;

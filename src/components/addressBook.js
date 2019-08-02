@@ -26,28 +26,81 @@ import Paper from '@material-ui/core/Paper';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import styles from './addressBookStyle';
-
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import styles from './styles/addressBookStyle';
+import decode from 'jwt-decode';
 
 class addressBook extends Component {
     constructor() {
         super();
         this.state = {
-            setOpen: false,
+            open: false,
+
+            firstName: ' ',
+            lastName: ' ',
+            email: ' ',
+            mobileNumber: ' ',
+            homePhone: ' ',
+            workPhone: ' ',
+            city: ' ',
+            state: ' ',
+            postalCode: ' ',
+            country: ' ',
+            uid: ' ',
+            contacts: []
         }
     }
 
+    componentDidMount() {
+        const id = decode(localStorage.getItem('token')).userId;
+        this.setState({
+            uid: id
+        })
+        fetch(`/contacts/${id}/1`, {
+            method: 'get',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        .then(res => res.json())
+        .then((res) => {
+            this.setState({
+                contacts : res
+            })
+        })
+    }
+    createContact = (e) => {
+        console.log(this.state)
+        e.preventDefault();
+
+        fetch('/create-contact', {
+            method: 'POST',
+            body: JSON.stringify(this.state),
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(res => {
+            console.log(res)
+            toast.info("Successfully created!", {
+                hideProgressBar: true,
+                draggable: false,
+            })
+        })
+    }
+
     handleClickOpen = () => {
-        this.setState.setOpen(true);
+        this.setState({ open: true });
     }
 
     handleClose = () => {
-        this.setState.setOpen(false);
+        this.setState({ open: false });
     }
 
+    handleChange = (label, e) => {
+        this.setState({ [label]: e.target.value })
+    }
     render() {
 
         const { classes } = this.props
@@ -135,7 +188,7 @@ class addressBook extends Component {
                                                 />
                                             </Grid>
                                             <Grid item>
-                                                <Button variant="contained" color="primary" className={classes.addUser} >
+                                                <Button variant="contained" color="primary" className={classes.addUser} onClick={this.handleClickOpen}>
                                                     Add Contact
                                                 </Button>
                                             </Grid>
@@ -144,7 +197,7 @@ class addressBook extends Component {
                                 </AppBar>
 
                                 <div className={classes.contentWrapper}>
-                                    <Typography color="textSecondary" align="center" style={{ display: 'none' }} onClick={this.handleClickOpen}>
+                                    <Typography color="textSecondary" align="center" style={{ display: 'none' }}>
                                         Add contacts...
                                 </Typography>
 
@@ -176,30 +229,128 @@ class addressBook extends Component {
 
                     {/* End Table  */}
 
-                    <Dialog open={open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                To subscribe to this website, please enter your email address here. We will send updates
-                                occasionally.
-                        </DialogContentText>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="name"
-                                label="Email Address"
-                                type="email"
-                                fullWidth
-                            />
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={this.handleClose} color="primary">
-                                Cancel
-                        </Button>
-                            <Button onClick={this.handleClose} color="primary">
-                                Subscribe
-                        </Button>
-                        </DialogActions>
+                    <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                        <ToastContainer
+                            enableMultiContainer
+                            position={toast.POSITION.TOP_RIGHT}
+                        />
+                        <DialogTitle id="form-dialog-title">Create new contact</DialogTitle>
+                        <form onSubmit={this.createContact}>
+                            <DialogContent>
+                                <Grid container alignItems='center'>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            style={{ marginRight: '10px' }}
+                                            autoFocus
+                                            margin="dense"
+                                            id="name"
+                                            label="First Name"
+                                            onChange={(e) => this.handleChange('firstName', e)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}
+                                        type="number" sm={6}>
+                                        <TextField
+                                            style={{ marginLeft: '10px' }}
+                                            margin="dense"
+                                            id="name"
+                                            label="Last Name"
+                                            onChange={(e) => this.handleChange('lastName', e)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            margin="dense"
+                                            id="email"
+                                            label="Email Address"
+                                            onChange={(e) => this.handleChange('email', e)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            style={{ marginRight: '100px' }}
+                                            margin="dense"
+                                            id="mobilenumber"
+                                            label="Mobile Number"
+                                            onChange={(e) => this.handleChange('mobileNumber', e)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            style={{ marginRight: '100px' }}
+                                            margin="dense"
+                                            id="homePhone"
+                                            label="Home Phone"
+                                            onChange={(e) => this.handleChange('homePhone', e)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            margin="dense"
+                                            id="workPhone"
+                                            label="Work Phone"
+                                            onChange={(e) => this.handleChange('workPhone', e)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            style={{ marginRight: '10px' }}
+                                            margin="dense"
+                                            id="city"
+                                            label="City"
+                                            onChange={(e) => this.handleChange('city', e)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            style={{ marginLeft: '10px' }}
+                                            margin="dense"
+                                            id="state"
+                                            label="State or Province"
+                                            onChange={(e) => this.handleChange('state', e)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            style={{ marginRight: '10px' }}
+                                            margin="dense"
+                                            id="postalCode"
+                                            label="Postal Code"
+                                            onChange={(e) => this.handleChange('postalCode', e)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            style={{ marginLeft: '10px' }}
+                                            margin="dense"
+                                            id="country"
+                                            label="Country"
+                                            onChange={(e) => this.handleChange('country', e)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                            </DialogContent>
+
+                            <DialogActions>
+                                <Button onClick={this.handleClose} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button type="submit" color="primary">
+                                    Save
+                                </Button>
+                            </DialogActions>
+                        </form>
                     </Dialog>
 
 
