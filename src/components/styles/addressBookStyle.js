@@ -36,7 +36,7 @@ const styles = theme => ({
         overflow: 'auto',
     },
     table: {
-        minWidth: 1210,
+        minWidth: 1195,
     },
     addUser: {
         marginRight: 2,
@@ -47,7 +47,21 @@ const styles = theme => ({
     },
     textfield: {
         marginRight: theme.spacing(2),
-    }
+    },
+    hideLoader: {
+        display: 'none',
+    },
+    loader: {
+        position: 'absolute',
+    },
+    loaderOverlay: {
+        height: '100%',
+        width: '100%',
+        position: 'absolute',
+        top: '44%',
+        left: '49%'
+    },
+
 
 });
 

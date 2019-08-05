@@ -31,338 +31,390 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './styles/addressBookStyle';
 import decode from 'jwt-decode';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+
 
 class addressBook extends Component {
-    constructor() {
-        super();
-        this.state = {
-            open: false,
+   constructor() {
+      super();
+      this.state = {
+         open: true,
+         showSpinner: true,
+         firstName: ' ',
+         lastName: ' ',
+         email: ' ',
+         mobileNumber: ' ',
+         homePhone: ' ',
+         workPhone: ' ',
+         city: ' ',
+         state: ' ',
+         postalCode: ' ',
+         country: ' ',
+         uid: ' ',
+         contacts: []
+      }
+   }
 
-            firstName: ' ',
-            lastName: ' ',
-            email: ' ',
-            mobileNumber: ' ',
-            homePhone: ' ',
-            workPhone: ' ',
-            city: ' ',
-            state: ' ',
-            postalCode: ' ',
-            country: ' ',
-            uid: ' ',
-            contacts: []
-        }
-    }
-
-    componentDidMount() {
-        const id = decode(localStorage.getItem('token')).userId;
-        this.setState({
-            uid: id
-        })
-        fetch(`/contacts/${id}/1`, {
-            method: 'get',
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        .then(res => res.json())
-        .then((res) => {
+   getAllContacts() {
+      const id = decode(localStorage.getItem('token')).userId;
+      fetch(`/contacts/${id}/1`, {
+         method: 'get',
+         headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+         }
+      })
+         .then(res => res.json())
+         .then((res) => {
             this.setState({
-                contacts : res
+               contacts: res
             })
-        })
-    }
-    createContact = (e) => {
-        console.log(this.state)
-        e.preventDefault();
+         })
+   }
 
-        fetch('/create-contact', {
-            method: 'POST',
-            body: JSON.stringify(this.state),
-            headers: {
-                'content-type': 'application/json'
-            }
-        }).then(res => {
-            console.log(res)
+   componentDidMount() {
+      const id = decode(localStorage.getItem('token')).userId;
+      this.setState({
+         uid: id
+      })
+      fetch(`/contacts/${id}/1`, {
+         method: 'get',
+         headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+         }
+      })
+         .then(res => res.json())
+         .then((res) => {
+            this.setState({
+               contacts: res
+            })
+         })
+   }
+
+   createContact = (e) => {
+      e.preventDefault();
+
+      this.setState({
+         showSpinner: true
+      })
+
+      setTimeout(() => {
+         this.setState({ showSpinner: false });
+         this.handleClose()
+      }, 3000)
+
+
+      fetch('/create-contact', {
+         method: 'POST',
+         body: JSON.stringify(this.state),
+         headers: {
+            'content-type': 'application/json'
+         }
+      })
+         .then(res => res.json())
+         .then(
             toast.info("Successfully created!", {
-                hideProgressBar: true,
-                draggable: false,
-            })
-        })
-    }
+               hideProgressBar: true,
+               draggable: false,
+            }))
+         .then(this.getAllContacts())
+   }
 
-    handleClickOpen = () => {
-        this.setState({ open: true });
-    }
 
-    handleClose = () => {
-        this.setState({ open: false });
-    }
+   handleClickOpen = () => {
+      this.setState({ open: true });
+   }
 
-    handleChange = (label, e) => {
-        this.setState({ [label]: e.target.value })
-    }
-    render() {
+   handleClose = () => {
+      this.setState({ open: false });
+   }
 
-        const { classes } = this.props
+   handleChange = (label, e) => {
+      this.setState({ [label]: e.target.value })
+   }
+   render() {
 
-        return (
-            <React.Fragment>
-                <div className={classes.root}>
+      const { classes } = this.props
 
-                    {/* Navbar  */}
+      return (
+         <React.Fragment>
+            <div className={classes.root}>
 
-                    <AppBar className={classes.navbar} position="sticky">
-                        <Toolbar>
-                            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                                <AccountBox />
-                            </IconButton>
-                            <Typography variant="h6" className={classes.title}>
-                                Address Book
+               <AppBar className={classes.navbar} position="sticky">
+                  <Toolbar>
+                     <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                        <AccountBox />
+                     </IconButton>
+                     <Typography variant="h6" className={classes.title}>
+                        Address Book
                             </Typography>
-                            <IconButton
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                color="inherit"
-                            >
-                                <Tooltip title="Sign out" placement="top">
-                                    <AccountCircle />
-                                </Tooltip>
-                            </IconButton>
-                            <IconButton
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                color="inherit"
-                            >
-                                <Tooltip title="Sign out" placement="top">
-                                    <Logout />
-                                </Tooltip>
-                            </IconButton>
-                        </Toolbar>
-                    </AppBar>
+                     <IconButton
+                        aria-label="account of current user"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        color="inherit"
+                     >
+                        <Tooltip title="Sign out" placement="top">
+                           <AccountCircle />
+                        </Tooltip>
+                     </IconButton>
+                     <IconButton
+                        aria-label="account of current user"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        color="inherit"
+                     >
+                        <Tooltip title="Sign out" placement="top">
+                           <Logout />
+                        </Tooltip>
+                     </IconButton>
+                  </Toolbar>
+               </AppBar>
 
-                    {/* End Navbar  */}
-
-
-                    {/* Header  */}
-
-                    <Column flexGrow={1}>
-                        <Row horizontal="center">
-                            <Column horizontal="center" style={{ marginBottom: 30 }}>
-                                <Box className={classes.header} mt={4} component="div"
-                                    style={{
-                                        minHeight: '200px',
-                                        maxidth: '1210px',
-                                        minWidth: '1210px',
-                                        borderRadius: '10px 10px 10px 10px',
-                                        boxShadow: '0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149)',
-                                    }} >
-                                </Box>
-                            </Column>
-                        </Row>
-                    </Column>
-
-                    {/* End Header  */}
+               {/* End Navbar  */}
 
 
-                    {/* Table Header  */}
+               {/* Header  */}
 
-                    <Column flexGrow={1}>
-                        <Row horizontal="center">
-                            <Paper className={classes.paper}>
-                                <AppBar className={classes.searchBar} position="static" color="default" elevation={0}>
-                                    <Toolbar>
-                                        <Grid container spacing={2} alignItems="center">
-                                            <Grid item>
-                                                <SearchIcon className={classes.block} color="inherit" />
-                                            </Grid>
-                                            <Grid item xs>
-                                                <TextField
-                                                    fullWidth
-                                                    placeholder="Search by First name or Last name"
-                                                    InputProps={{
-                                                        disableUnderline: true,
-                                                        className: classes.searchInput,
-                                                    }}
-                                                />
-                                            </Grid>
-                                            <Grid item>
-                                                <Button variant="contained" color="primary" className={classes.addUser} onClick={this.handleClickOpen}>
-                                                    Add Contact
+               <Column flexGrow={1}>
+                  <Row horizontal="center">
+                     <Column horizontal="center" style={{ marginBottom: 30 }}>
+                        <Box className={classes.header} mt={4} component="div"
+                           style={{
+                              minHeight: '200px',
+                              maxidth: '1210px',
+                              minWidth: '1210px',
+                              borderRadius: '10px 10px 10px 10px',
+                              boxShadow: '0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149)',
+                           }} >
+                        </Box>
+                     </Column>
+                  </Row>
+               </Column>
+
+               {/* End Header  */}
+
+
+               {/* Table Header  */}
+
+               <Column flexGrow={1}>
+                  <Row horizontal="center">
+                     <Paper className={classes.paper}>
+                        <AppBar className={classes.searchBar} position="static" color="default" elevation={0}>
+                           <Toolbar>
+                              <Grid container spacing={2} alignItems="center">
+                                 <Grid item>
+                                    <SearchIcon className={classes.block} color="inherit" />
+                                 </Grid>
+                                 <Grid item xs>
+                                    <TextField
+                                       fullWidth
+                                       placeholder="Search by First name or Last name"
+                                       InputProps={{
+                                          disableUnderline: true,
+                                          className: classes.searchInput,
+                                       }}
+                                    />
+                                 </Grid>
+                                 <Grid item>
+                                    <Button variant="contained" color="primary" className={classes.addUser} onClick={this.handleClickOpen}>
+                                       Create contact
                                                 </Button>
-                                            </Grid>
-                                        </Grid>
-                                    </Toolbar>
-                                </AppBar>
+                                 </Grid>
+                              </Grid>
+                           </Toolbar>
+                        </AppBar>
 
-                                <div className={classes.contentWrapper}>
-                                    <Typography color="textSecondary" align="center" style={{ display: 'none' }}>
-                                        Add contacts...
+                        <div className={classes.contentWrapper}>
+                           <Typography color="textSecondary" align="center" style={{ display: 'none' }}>
+                              Add contacts...
                                 </Typography>
 
-                                    <Table className={classes.table}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>First name</TableCell>
-                                                <TableCell>Last name</TableCell>
-                                                <TableCell>Phonenumber</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {/* {rows.map(row => (
-                                                <TableRow key={row.fname}>
-                                                    <TableCell component="th" scope="row">
-                                                        {row.fname}
-                                                    </TableCell>
-                                                    <TableCell>{row.lname}</TableCell>
-                                                    <TableCell>{row.phonenumber}</TableCell>
-                                                </TableRow>
-                                            ))} */}
-                                        </TableBody>
-                                    </Table>
+                           <Table className={classes.table}>
+                              <TableHead>
+                                 <TableRow>
+                                    <TableCell>First name</TableCell>
+                                    <TableCell>Last name</TableCell>
+                                    <TableCell>Phonenumber</TableCell>
+                                    <TableCell>Action</TableCell>
+                                 </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                 {this.state.contacts.map(row => (
+                                    <TableRow key={row.first_name}>
+                                       <TableCell component="th" scope="row">
+                                          {row.first_name}
+                                       </TableCell>
+                                       <TableCell>{row.last_name}</TableCell>
+                                       <TableCell>{row.mobile_phone}</TableCell>
+                                       <TableCell>
+                                          <IconButton
+                                             aria-label="more"
+                                             aria-controls="long-menu"
+                                             aria-haspopup="true"
+                                          >
+                                             <MoreVertIcon />
+                                          </IconButton>
+                                       </TableCell>
+                                    </TableRow>
+                                 ))}
+                              </TableBody>
+                           </Table>
 
-                                </div>
-                            </Paper>
+                        </div>
+                     </Paper>
+                  </Row>
+               </Column>
+
+               {/* End Table  */}
+
+               <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                  <ToastContainer
+                     enableMultiContainer
+                     position={toast.POSITION.TOP_RIGHT}
+                  />
+                  <div className={this.state.showSpinner ? classes.loader : classes.hideLoader}>
+                     <Column horizontal="center" style={{ marginTop: '90px' }}>
+
+                        <Row item xs={12} sm={6} className={classes.loader} horizontal="center" >
+                           {/* <span className={classes.loginMessage}>Creating your account...</span> */}
+                           <CircularProgress className={classes.spinner} />
                         </Row>
-                    </Column>
 
-                    {/* End Table  */}
+                     </Column>
+                  </div>
 
-                    <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                        <ToastContainer
-                            enableMultiContainer
-                            position={toast.POSITION.TOP_RIGHT}
-                        />
-                        <DialogTitle id="form-dialog-title">Create new contact</DialogTitle>
-                        <form onSubmit={this.createContact}>
-                            <DialogContent>
-                                <Grid container alignItems='center'>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            style={{ marginRight: '10px' }}
-                                            autoFocus
-                                            margin="dense"
-                                            id="name"
-                                            label="First Name"
-                                            onChange={(e) => this.handleChange('firstName', e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}
-                                        type="number" sm={6}>
-                                        <TextField
-                                            style={{ marginLeft: '10px' }}
-                                            margin="dense"
-                                            id="name"
-                                            label="Last Name"
-                                            onChange={(e) => this.handleChange('lastName', e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            margin="dense"
-                                            id="email"
-                                            label="Email Address"
-                                            onChange={(e) => this.handleChange('email', e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <TextField
-                                            style={{ marginRight: '100px' }}
-                                            margin="dense"
-                                            id="mobilenumber"
-                                            label="Mobile Number"
-                                            onChange={(e) => this.handleChange('mobileNumber', e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <TextField
-                                            style={{ marginRight: '100px' }}
-                                            margin="dense"
-                                            id="homePhone"
-                                            label="Home Phone"
-                                            onChange={(e) => this.handleChange('homePhone', e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <TextField
-                                            margin="dense"
-                                            id="workPhone"
-                                            label="Work Phone"
-                                            onChange={(e) => this.handleChange('workPhone', e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            style={{ marginRight: '10px' }}
-                                            margin="dense"
-                                            id="city"
-                                            label="City"
-                                            onChange={(e) => this.handleChange('city', e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            style={{ marginLeft: '10px' }}
-                                            margin="dense"
-                                            id="state"
-                                            label="State or Province"
-                                            onChange={(e) => this.handleChange('state', e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            style={{ marginRight: '10px' }}
-                                            margin="dense"
-                                            id="postalCode"
-                                            label="Postal Code"
-                                            onChange={(e) => this.handleChange('postalCode', e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            style={{ marginLeft: '10px' }}
-                                            margin="dense"
-                                            id="country"
-                                            label="Country"
-                                            onChange={(e) => this.handleChange('country', e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                </Grid>
+                  <DialogTitle id="form-dialog-title">Create new contact</DialogTitle>
+                  <form onSubmit={this.createContact}>
+                     <DialogContent>
+                        <Grid container alignItems='center'>
+                           <Grid item xs={12} sm={6}>
+                              <TextField
+                                 style={{ marginRight: '10px', marginBottom: '32px' }}
+                                 autoFocus
+                                 margin="dense"
+                                 id="name"
+                                 label="First Name"
+                                 onChange={(e) => this.handleChange('firstName', e)}
+                                 fullWidth
+                              />
+                           </Grid>
+                           <Grid item xs={12} sm={6}>
+                              <TextField
+                                 style={{ marginLeft: '10px', marginBottom: '32px' }}
+                                 margin="dense"
+                                 id="name"
+                                 label="Last Name"
+                                 onChange={(e) => this.handleChange('lastName', e)}
+                                 fullWidth
+                              />
+                           </Grid>
+                           <Grid item xs={12}>
+                              <TextField
+                                 style={{ marginBottom: '32px' }}
+                                 margin="dense"
+                                 id="email"
+                                 label="Email Address"
+                                 required
+                                 InputLabelProps={{ required: false }}
+                                 type="email"
+                                 onChange={(e) => this.handleChange('email', e)}
+                                 fullWidth
+                              />
+                           </Grid>
+                           <Grid item xs={4}>
+                              <TextField
+                                 style={{ marginRight: '10px', marginBottom: '32px' }}
+                                 margin="dense"
+                                 id="mobilenumber"
+                                 label="Mobile Number"
+                                 onChange={(e) => this.handleChange('mobileNumber', e)}
+                                 fullWidth
+                              />
+                           </Grid>
+                           <Grid item xs={4}>
+                              <TextField
+                                 style={{ marginRight: '10px', marginBottom: '32px' }}
+                                 margin="dense"
+                                 id="homePhone"
+                                 label="Home Phone"
+                                 onChange={(e) => this.handleChange('homePhone', e)}
+                                 fullWidth
+                              />
+                           </Grid>
+                           <Grid item xs={4}>
+                              <TextField
+                                 style={{ marginRight: '10px', marginBottom: '32px' }}
+                                 margin="dense"
+                                 id="workPhone"
+                                 label="Work Phone"
+                                 onChange={(e) => this.handleChange('workPhone', e)}
+                                 fullWidth
+                              />
+                           </Grid>
+                           <Grid item xs={12} sm={6}>
+                              <TextField
+                                 style={{ marginRight: '10px', marginBottom: '32px' }}
+                                 margin="dense"
+                                 id="city"
+                                 label="City"
+                                 onChange={(e) => this.handleChange('city', e)}
+                                 fullWidth
+                              />
+                           </Grid>
+                           <Grid item xs={12} sm={6}>
+                              <TextField
+                                 style={{ marginLeft: '10px', marginBottom: '32px' }}
+                                 margin="dense"
+                                 id="state"
+                                 label="State or Province"
+                                 onChange={(e) => this.handleChange('state', e)}
+                                 fullWidth
+                              />
+                           </Grid>
+                           <Grid item xs={12} sm={6}>
+                              <TextField
+                                 style={{ marginRight: '10px', marginBottom: '32px' }}
+                                 margin="dense"
+                                 id="postalCode"
+                                 label="Postal Code"
+                                 onChange={(e) => this.handleChange('postalCode', e)}
+                                 fullWidth
+                              />
+                           </Grid>
+                           <Grid item xs={12} sm={6}>
+                              <TextField
+                                 style={{ marginLeft: '10px', marginBottom: '32px' }}
+                                 margin="dense"
+                                 id="country"
+                                 label="Country"
+                                 onChange={(e) => this.handleChange('country', e)}
+                                 fullWidth
+                              />
+                           </Grid>
+                        </Grid>
 
-                            </DialogContent>
+                     </DialogContent>
 
-                            <DialogActions>
-                                <Button onClick={this.handleClose} color="primary">
-                                    Cancel
+                     <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                           Cancel
                                 </Button>
-                                <Button type="submit" color="primary">
-                                    Save
+                        <Button type="submit" color="primary">
+                           Save
                                 </Button>
-                            </DialogActions>
-                        </form>
-                    </Dialog>
+                     </DialogActions>
+                  </form>
+               </Dialog>
 
 
-                </div>
+            </div>
 
 
 
 
-            </React.Fragment >
-        )
-    }
+         </React.Fragment >
+      )
+   }
 }
-
-
 export default withStyles(styles)(addressBook);

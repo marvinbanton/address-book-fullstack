@@ -20,6 +20,8 @@ class signIn extends Component {
         }
     }
 
+    
+
     inputChecker = (value, option) => {
         if (option === 'username') {
             this.setState({
