@@ -27,6 +27,10 @@ class SignUp extends Component {
       }
    }
 
+   componentDidMount() {
+      if (localStorage.getItem('token')) return this.props.history.push('/addressBook')
+   }
+
    createAccount = (e) => {
       e.preventDefault();
 

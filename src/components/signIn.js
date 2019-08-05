@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import styles from './styles/signInStyles';
 import Container from '@material-ui/core/Container';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class signIn extends Component {
     constructor() {
@@ -20,7 +22,46 @@ class signIn extends Component {
         }
     }
 
-    
+    componentDidMount() {
+        if (localStorage.getItem('token')) return this.props.history.push('/addressBook')
+    }
+
+    login = (e) => {
+        e.preventDefault();
+
+        this.setState({
+            showSpinner: true
+        })
+
+        fetch('/signin', {
+            method: 'POST',
+            body: JSON.stringify(this.state),
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                console.log(res)
+                if (res.error) {
+                    return toast.error(res.error, {
+                        hideProgressBar: true,
+                        draggable: false,
+                    });
+                } else {
+                    toast.info('Success login', {
+                        hideProgressBar: true,
+                        draggable: false,
+                    });
+                    localStorage.setItem('token', res.token)
+
+                    setTimeout(() => {
+                        this.setState({ showSpinner: false });
+                        this.props.history.push('./addressbook')
+                    }, 3000)
+                }
+            });
+    }
 
     inputChecker = (value, option) => {
         if (option === 'username') {
@@ -40,6 +81,10 @@ class signIn extends Component {
 
         return (
             <Container component="main" maxWidth="xs" mt={100} >
+                <ToastContainer
+                    enableMultiContainer
+                    position={toast.POSITION.TOP_RIGHT}
+                />
                 <CssBaseline />
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
@@ -48,7 +93,7 @@ class signIn extends Component {
                     <Typography component="h1" variant="h5">
                         Sign in
         </Typography>
-                    <form className={classes.form}>
+                    <form className={classes.form} onSubmit={this.login}>
                         <TextField
                             style={{ marginBottom: '-3px' }}
                             variant="outlined"

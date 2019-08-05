@@ -73,6 +73,7 @@ class addressBook extends Component {
    }
 
    componentDidMount() {
+      if (!localStorage.getItem('token')) return this.props.history.push('/signin')
       const id = decode(localStorage.getItem('token')).userId;
       this.setState({
          uid: id
