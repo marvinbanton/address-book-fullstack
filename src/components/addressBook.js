@@ -39,8 +39,8 @@ class addressBook extends Component {
    constructor() {
       super();
       this.state = {
-         open: true,
-         showSpinner: true,
+         open: false,
+         showSpinner: false,
          firstName: ' ',
          lastName: ' ',
          email: ' ',

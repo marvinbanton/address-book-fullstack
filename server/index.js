@@ -1,6 +1,5 @@
 const express = require('express');
 const massive = require('massive');
-// const bodyParser = require('bodyParser');
 const users = require('./controllers/user.js')
 const contact = require('./controllers/addcontacts.js')
 const show = require('./controllers/showContacts.js')
@@ -14,7 +13,6 @@ massive({
 }).then(db => {
 
     const app = express();
-    // app.use(bodyParser.urlencoded({ extended: false }))
     app.set('db', db)
 
     app.use(express.json());
