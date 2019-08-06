@@ -11,6 +11,11 @@ import styles from './styles/addressBookStyle';
 import Typography from '@material-ui/core/Typography';
 
 class Navbar extends Component {
+
+    logout = () => {
+        localStorage.clear();
+        window.location.href = '/signin'
+    }
     render() {
 
         const { classes } = this.props
@@ -39,6 +44,7 @@ class Navbar extends Component {
                         aria-controls="menu-appbar"
                         aria-haspopup="true"
                         color="inherit"
+                        onClick={this.logout}
                     >
                         <Tooltip title="Sign out" placement="top">
                             <Logout />
