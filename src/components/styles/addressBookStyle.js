@@ -16,6 +16,7 @@ const styles = theme => ({
         backgroundSize: 'cover',
     },
     paper: {
+        marginTop: 50,
         minWidth: 100,
         margin: 'auto',
         borderRadius: '.5rem',

@@ -1,39 +1,31 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import { ToastContainer, toast } from 'react-toastify';
+import { Column, Row } from "simple-flexbox";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import AccountBox from '@material-ui/icons/AccountBox';
 import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Logout from '@material-ui/icons/ExitToApp';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import { Column, Row } from "simple-flexbox";
-import Box from '@material-ui/core/Box';
-
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
-
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './styles/addressBookStyle';
 import decode from 'jwt-decode';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-
+import Navbar from './Navbar'
 
 class addressBook extends Component {
    constructor() {
@@ -52,7 +44,8 @@ class addressBook extends Component {
          postalCode: ' ',
          country: ' ',
          uid: ' ',
-         contacts: []
+         contacts: [],
+         search: ''
       }
    }
 
@@ -133,6 +126,11 @@ class addressBook extends Component {
    handleChange = (label, e) => {
       this.setState({ [label]: e.target.value })
    }
+
+   handleSearch = (e) => {
+      this.setState({ search: e.target.value })
+   }
+
    render() {
 
       const { classes } = this.props
@@ -141,43 +139,16 @@ class addressBook extends Component {
          <React.Fragment>
             <div className={classes.root}>
 
-               <AppBar className={classes.navbar} position="sticky">
-                  <Toolbar>
-                     <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <AccountBox />
-                     </IconButton>
-                     <Typography variant="h6" className={classes.title}>
-                        Address Book
-                            </Typography>
-                     <IconButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        color="inherit"
-                     >
-                        <Tooltip title="Sign out" placement="top">
-                           <AccountCircle />
-                        </Tooltip>
-                     </IconButton>
-                     <IconButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        color="inherit"
-                     >
-                        <Tooltip title="Sign out" placement="top">
-                           <Logout />
-                        </Tooltip>
-                     </IconButton>
-                  </Toolbar>
-               </AppBar>
+               {/* Navbar Component  */}
 
-               {/* End Navbar  */}
+               <Navbar />
+
+               {/* End Navbar Component */}
 
 
                {/* Header  */}
 
-               <Column flexGrow={1}>
+               {/* <Column>
                   <Row horizontal="center">
                      <Column horizontal="center" style={{ marginBottom: 30 }}>
                         <Box className={classes.header} mt={4} component="div"
@@ -191,7 +162,7 @@ class addressBook extends Component {
                         </Box>
                      </Column>
                   </Row>
-               </Column>
+               </Column> */}
 
                {/* End Header  */}
 
@@ -215,12 +186,13 @@ class addressBook extends Component {
                                           disableUnderline: true,
                                           className: classes.searchInput,
                                        }}
+                                       onChange={(e) => this.handleSearch(e)}
                                     />
                                  </Grid>
                                  <Grid item>
                                     <Button variant="contained" color="primary" className={classes.addUser} onClick={this.handleClickOpen}>
                                        Create contact
-                                                </Button>
+                                    </Button>
                                  </Grid>
                               </Grid>
                            </Toolbar>
@@ -241,24 +213,49 @@ class addressBook extends Component {
                                  </TableRow>
                               </TableHead>
                               <TableBody>
-                                 {this.state.contacts.map(row => (
-                                    <TableRow key={row.first_name}>
-                                       <TableCell component="th" scope="row">
-                                          {row.first_name}
-                                       </TableCell>
-                                       <TableCell>{row.last_name}</TableCell>
-                                       <TableCell>{row.mobile_phone}</TableCell>
-                                       <TableCell>
-                                          <IconButton
-                                             aria-label="more"
-                                             aria-controls="long-menu"
-                                             aria-haspopup="true"
-                                          >
-                                             <MoreVertIcon />
-                                          </IconButton>
-                                       </TableCell>
-                                    </TableRow>
-                                 ))}
+                                 {this.state.contacts.map(row => {
+                                    if (this.state.search) {
+                                       if (row.first_name.toLowerCase().includes(this.state.search.toLowerCase()) || row.last_name.toLowerCase().includes(this.state.search.toLowerCase())) {
+                                          return (
+                                             <TableRow key={row.first_name}>
+                                                <TableCell component="th" scope="row">
+                                                   {row.first_name}
+                                                </TableCell>
+                                                <TableCell>{row.last_name}</TableCell>
+                                                <TableCell>{row.mobile_phone}</TableCell>
+                                                <TableCell>
+                                                   <IconButton
+                                                      aria-label="more"
+                                                      aria-controls="long-menu"
+                                                      aria-haspopup="true"
+                                                   >
+                                                      <MoreVertIcon />
+                                                   </IconButton>
+                                                </TableCell>
+                                             </TableRow>
+                                          )
+                                       }
+                                    } else {
+                                       return (
+                                          <TableRow key={row.first_name}>
+                                             <TableCell component="th" scope="row">
+                                                {row.first_name}
+                                             </TableCell>
+                                             <TableCell>{row.last_name}</TableCell>
+                                             <TableCell>{row.mobile_phone}</TableCell>
+                                             <TableCell>
+                                                <IconButton
+                                                   aria-label="more"
+                                                   aria-controls="long-menu"
+                                                   aria-haspopup="true"
+                                                >
+                                                   <MoreVertIcon />
+                                                </IconButton>
+                                             </TableCell>
+                                          </TableRow>
+                                       )
+                                    }
+                                 })}
                               </TableBody>
                            </Table>
 
@@ -274,18 +271,18 @@ class addressBook extends Component {
                      enableMultiContainer
                      position={toast.POSITION.TOP_RIGHT}
                   />
+
+
+                  <DialogTitle id="form-dialog-title">Create new contact</DialogTitle>
                   <div className={this.state.showSpinner ? classes.loader : classes.hideLoader}>
-                     <Column horizontal="center" style={{ marginTop: '90px' }}>
+                     <Column horizontal="center" style={{ marginTop: '213px', marginLeft: '308px' }}>
 
                         <Row item xs={12} sm={6} className={classes.loader} horizontal="center" >
-                           {/* <span className={classes.loginMessage}>Creating your account...</span> */}
                            <CircularProgress className={classes.spinner} />
                         </Row>
 
                      </Column>
                   </div>
-
-                  <DialogTitle id="form-dialog-title">Create new contact</DialogTitle>
                   <form onSubmit={this.createContact}>
                      <DialogContent>
                         <Grid container alignItems='center'>

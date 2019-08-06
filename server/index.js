@@ -17,7 +17,7 @@ massive({
     app.set('db', db)
 
     app.use(express.json());
-
+    app.get('/search', )
     app.post('/signin', user.login)
     app.post('/signup', users.register)
     app.post('/create-contact', contact.createContacts)
