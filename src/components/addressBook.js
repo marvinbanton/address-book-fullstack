@@ -72,7 +72,7 @@ class addressBook extends Component {
   constructor() {
     super()
     this.state = {
-      createContactDialog: false,
+      createContact: false,
       viewContact: false,
       deleteContact: false,
       showSpinner: false,
@@ -94,7 +94,7 @@ class addressBook extends Component {
     }
   }
 
-  getAllContacts() {
+  getAllContacts = () => {
     const id = decode(localStorage.getItem('token')).userId;
     fetch(`/contacts/${id}/1`, {
       method: 'get',
@@ -139,8 +139,9 @@ class addressBook extends Component {
 
     setTimeout(() => {
       this.setState({ showSpinner: false });
-      this.handleClose()
-    }, 3000)
+      this.createContactDialogClose()
+      this.getAllContacts()
+    }, 2000)
 
 
     fetch('/create-contact', {
@@ -156,23 +157,28 @@ class addressBook extends Component {
           hideProgressBar: true,
           draggable: false,
         }))
-      .then(this.getAllContacts())
+  }
+
+  deleteContact = () => {
+    
   }
 
   viewContactDetails = () => {
     this.setState({ viewContact: !this.state.viewContact })
+    this.setState({ anchorEl: null });
   }
 
   removeContact = () => {
     this.setState({ deleteContact: !this.state.deleteContact })
+    this.setState({ anchorEl: null });
   }
 
-  handleClickOpen = () => {
-    this.setState({ createContactDialog: true });
+  createContactDialog = () => {
+    this.setState({ createContact: true });
   }
 
-  handleClose = () => {
-    this.setState({ createContactDialog: false });
+  createContactDialogClose = () => {
+    this.setState({ createContact: false });
   }
 
   handleChange = (label, e) => {
@@ -230,7 +236,7 @@ class addressBook extends Component {
                         />
                       </Grid>
                       <Grid item>
-                        <Button variant="contained" color="primary" className={classes.addUser} onClick={this.handleClickOpen}>
+                        <Button variant="contained" color="primary" className={classes.addUser} onClick={this.createContactDialog}>
                           Create contact
                         </Button>
                       </Grid>
@@ -268,10 +274,11 @@ class addressBook extends Component {
                                     aria-label="more"
                                     aria-controls="long-menu"
                                     aria-haspopup="true"
-                                    onClick={this.handleClick}
+                                    onClick={(e) => this.handleClick(e, row)}
                                   >
                                     <MoreVertIcon />
                                   </IconButton>
+
                                   <StyledMenu
                                     id="customized-menu"
                                     anchorEl={this.state.anchorEl}
@@ -285,13 +292,13 @@ class addressBook extends Component {
                                       </ListItemIcon>
                                       <ListItemText
                                         primary="Contact Details"
-                                        onClick={this.handleClickOpen}
+                                        onClick={this.viewContactDetails}
                                       />
                                     </StyledMenuItem>
                                     <StyledMenuItem>
-                                      <Tooltip title="Profile" placement="top">
+                                      <ListItemIcon>
                                         <EditIcon />
-                                      </Tooltip>
+                                      </ListItemIcon>
                                       <ListItemText
                                         primary="Edit"
                                         onClick={this.handleClickOpen}
@@ -299,13 +306,11 @@ class addressBook extends Component {
                                     </StyledMenuItem>
                                     <StyledMenuItem>
                                       <ListItemIcon>
-                                        <Tooltip title="Profile" placement="top">
-                                          <DeleteIcon />
-                                        </Tooltip>
+                                        <DeleteIcon />
                                       </ListItemIcon>
                                       <ListItemText
                                         primary="Delete"
-                                        onClick={this.props.handleClickOpen}
+                                        onClick={this.removeContact}
                                       />
                                     </StyledMenuItem>
                                   </StyledMenu>
@@ -322,12 +327,12 @@ class addressBook extends Component {
                               <TableCell>{row.last_name}</TableCell>
                               <TableCell>{row.mobile_phone}</TableCell>
                               <TableCell>
-                                <Tooltip title="More actions" placement="right" onClick={(e) => this.handleClick(e, row)}>
+                                <Tooltip title="More actions" placement="right">
                                   <IconButton
                                     aria-label="more"
                                     aria-controls="long-menu"
                                     aria-haspopup="true"
-
+                                    onClick={(e) => this.handleClick(e, row)}
                                   >
                                     <MoreVertIcon />
                                   </IconButton>
@@ -394,7 +399,7 @@ class addressBook extends Component {
 
           {/* End Table  */}
 
-          <Dialog open={this.state.createContactDialog} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+          <Dialog open={this.state.createContact} onClose={this.createContactDialogClose} aria-labelledby="form-dialog-title">
             <ToastContainer
               enableMultiContainer
               position={toast.POSITION.TOP_RIGHT}
@@ -522,7 +527,7 @@ class addressBook extends Component {
               </DialogContent>
 
               <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
+                <Button onClick={this.createContactDialogClose} color="primary">
                   Cancel
                                 </Button>
                 <Button type="submit" color="primary">

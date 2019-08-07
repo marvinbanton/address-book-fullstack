@@ -4,6 +4,7 @@ const users = require('./controllers/user.js')
 const user = require('./controllers/signin.js')
 const contact = require('./controllers/addcontacts.js')
 const show = require('./controllers/showContacts.js')
+const remove = require('./controllers/deleteContact.js')
 
 massive({
     host: 'localhost',
@@ -22,6 +23,7 @@ massive({
     app.post('/signup', users.register)
     app.post('/create-contact', contact.createContacts)
     app.get('/contacts/:id/1', show.showContacts)
+    app.get('/remove/:id', remove.removeContact)
 
     const PORT = 5000;
     app.listen(PORT, () => {
