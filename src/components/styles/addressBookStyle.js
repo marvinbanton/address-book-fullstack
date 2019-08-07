@@ -14,9 +14,13 @@ const styles = theme => ({
     header: {
         backgroundImage: 'url(https://service.mycontacts-app.com/contacts/static/img/start_page_image.png)',
         backgroundSize: 'cover',
+        minHeight: '200px',
+        minWidth: '1210px',
+        borderRadius: '10px 10px 10px 10px',
+        boxShadow: '0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149)',
     },
     paper: {
-        marginTop: 50,
+        marginTop: 60,
         minWidth: 100,
         margin: 'auto',
         borderRadius: '.5rem',
@@ -62,8 +66,15 @@ const styles = theme => ({
         top: '44%',
         left: '49%'
     },
-
-
+    contacts: {
+        '&:hover': {
+            backgroundColor: '#efefef'
+        }
+    },
+    dialog: {
+        width: ''
+    }
 });
+
 
 export default styles;
