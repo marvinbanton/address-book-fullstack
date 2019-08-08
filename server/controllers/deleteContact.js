@@ -1,10 +1,10 @@
-module.export = {
+module.exports = {
     removeContact: (req, res) => {
         const db = req.app.get('db')
         const { id } = req.params
 
         db.query(`DELETE FROM contacts WHERE id = ${id}`)
-            .then(res => res.status(201).send(res))
+            .then(response => res.status(201).send(response))
             .catch(err => {
                 console.log(err)
                 res.status(500).end()

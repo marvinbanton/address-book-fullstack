@@ -50,7 +50,7 @@ class signIn extends Component {
                     });
                 } else {
                     toast.info('Success login', {
-                        hideProgressBar: true,
+                        hideProgressBar: true,                                                                                                                                                                                                                                                      
                         draggable: false,
                     });
                     localStorage.setItem('token', res.token)

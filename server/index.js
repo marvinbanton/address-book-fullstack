@@ -18,11 +18,10 @@ massive({
     app.set('db', db)
 
     app.use(express.json());
-    app.get('/search', )
     app.post('/signin', user.login)
     app.post('/signup', users.register)
     app.post('/create-contact', contact.createContacts)
-    app.get('/contacts/:id/1', show.showContacts)
+    app.get('/contacts/:id', show.showContacts)
     app.get('/remove/:id', remove.removeContact)
 
     const PORT = 5000;

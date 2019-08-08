@@ -16,14 +16,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './styles/addressBookStyle';
 import decode from 'jwt-decode';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Navbar from './navbar'
 import DeleteContact from './deleteContact';
@@ -36,6 +31,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ContactIcon from '@material-ui/icons/Contacts';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddContact from './addContact';
 
 const StyledMenu = withStyles({
   paper: {
@@ -88,6 +84,7 @@ class addressBook extends Component {
       postalCode: '',
       country: '',
       uid: '',
+      id: '',
       contacts: [],
       search: '',
       activeContact: []
@@ -96,8 +93,8 @@ class addressBook extends Component {
 
   getAllContacts = () => {
     const id = decode(localStorage.getItem('token')).userId;
-    fetch(`/contacts/${id}/1`, {
-      method: 'get',
+    fetch(`/contacts/${id}`, {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
@@ -116,8 +113,8 @@ class addressBook extends Component {
     this.setState({
       uid: id
     })
-    fetch(`/contacts/${id}/1`, {
-      method: 'get',
+    fetch(`/contacts/${id}`, {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
@@ -130,7 +127,7 @@ class addressBook extends Component {
       })
   }
 
-  createContact = (e) => {
+  createContactFunc = (e) => {
     e.preventDefault();
 
     this.setState({
@@ -139,7 +136,7 @@ class addressBook extends Component {
 
     setTimeout(() => {
       this.setState({ showSpinner: false });
-      this.createContactDialogClose()
+      this.createContactDialog()
       this.getAllContacts()
     }, 2000)
 
@@ -159,8 +156,30 @@ class addressBook extends Component {
         }))
   }
 
-  deleteContact = () => {
-    
+  deleteContactfunc = (row) => {
+
+    this.setState({
+      showSpinner: true
+    })
+
+    setTimeout(() => {
+      this.setState({ showSpinner: false });
+      this.getAllContacts()
+      this.removeContact()
+    }, 2000)
+
+    fetch(`/remove/${row.id}`, {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(
+        toast.info("Successfully Deleted!", {
+          hideProgressBar: true,
+          draggable: false,
+        }))
   }
 
   viewContactDetails = () => {
@@ -174,11 +193,7 @@ class addressBook extends Component {
   }
 
   createContactDialog = () => {
-    this.setState({ createContact: true });
-  }
-
-  createContactDialogClose = () => {
-    this.setState({ createContact: false });
+    this.setState({ createContact: !this.state.createContact });
   }
 
   handleChange = (label, e) => {
@@ -192,6 +207,7 @@ class addressBook extends Component {
   handleClick = (e, row) => {
     this.setState({ anchorEl: e.currentTarget })
     this.setState({ activeContact: row })
+    console.log(row)
   }
 
   handleDialogClose = () => {
@@ -201,17 +217,13 @@ class addressBook extends Component {
   render() {
 
     const { classes } = this.props
-
     return (
       <React.Fragment>
         <div className={classes.root}>
           {/* Navbar Component  */}
 
           <Navbar />
-
-          {/* End Navbar Component */}
-
-
+          
           {/* Table Header  */}
 
           <Column flexGrow={1}>
@@ -247,7 +259,7 @@ class addressBook extends Component {
                 <div className={classes.contentWrapper}>
                   <Typography color="textSecondary" align="center" style={{ display: 'none' }}>
                     Add contacts...
-                                </Typography>
+                  </Typography>
 
                   <Table className={classes.table}>
                     <TableHead>
@@ -379,17 +391,6 @@ class addressBook extends Component {
                         }
                       })}
                     </TableBody>
-
-                    <DeleteContact
-                      deleteContact={this.state.deleteContact}
-                      removeContact={this.removeContact}
-                    />
-                    <ContactDetails
-                      viewContact={this.state.viewContact}
-                      viewContactDetails={this.viewContactDetails}
-                      activeContact={this.state.activeContact}
-                    />
-
                   </Table>
 
                 </div>
@@ -399,144 +400,34 @@ class addressBook extends Component {
 
           {/* End Table  */}
 
-          <Dialog open={this.state.createContact} onClose={this.createContactDialogClose} aria-labelledby="form-dialog-title">
-            <ToastContainer
-              enableMultiContainer
-              position={toast.POSITION.TOP_RIGHT}
-            />
 
-            <DialogTitle id="form-dialog-title">Create new contact</DialogTitle>
-            <div className={this.state.showSpinner ? classes.loader : classes.hideLoader}>
-              <Column horizontal="center" style={{ marginTop: '213px', marginLeft: '308px' }}>
+          {/* Delete Contact Component */}
 
-                <Row item xs={12} sm={6} className={classes.loader} horizontal="center" >
-                  <CircularProgress className={classes.spinner} />
-                </Row>
+          <DeleteContact
+            deleteContactfunc={this.deleteContactfunc}
+            deleteContact={this.state.deleteContact}
+            showSpinner={this.state.showSpinner}
+            removeContact={this.removeContact}
+            row={this.state.activeContact}
+          />
 
-              </Column>
-            </div>
-            <form onSubmit={this.createContact}>
-              <DialogContent>
-                <Grid container alignItems='center'>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      style={{ marginRight: '10px', marginBottom: '32px' }}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      label="First Name"
-                      onChange={(e) => this.handleChange('firstName', e)}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      style={{ marginLeft: '10px', marginBottom: '32px' }}
-                      margin="dense"
-                      id="name"
-                      label="Last Name"
-                      onChange={(e) => this.handleChange('lastName', e)}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      style={{ marginBottom: '32px' }}
-                      margin="dense"
-                      id="email"
-                      label="Email Address"
-                      required
-                      InputLabelProps={{ required: false }}
-                      type="email"
-                      onChange={(e) => this.handleChange('email', e)}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      style={{ marginLeft: '-10px', marginBottom: '32px' }}
-                      margin="dense"
-                      id="mobilenumber"
-                      label="Mobile Number"
-                      onChange={(e) => this.handleChange('mobileNumber', e)}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      style={{ marginRight: '10px', marginBottom: '32px' }}
-                      margin="dense"
-                      id="homePhone"
-                      label="Home Phone"
-                      onChange={(e) => this.handleChange('homePhone', e)}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      style={{ marginLeft: '10px', marginBottom: '32px' }}
-                      margin="dense"
-                      id="workPhone"
-                      label="Work Phone"
-                      onChange={(e) => this.handleChange('workPhone', e)}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      style={{ marginRight: '10px', marginBottom: '32px' }}
-                      margin="dense"
-                      id="city"
-                      label="City"
-                      onChange={(e) => this.handleChange('city', e)}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      style={{ marginLeft: '10px', marginBottom: '32px' }}
-                      margin="dense"
-                      id="state"
-                      label="State or Province"
-                      onChange={(e) => this.handleChange('state', e)}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      style={{ marginRight: '10px', marginBottom: '32px' }}
-                      margin="dense"
-                      id="postalCode"
-                      label="Postal Code"
-                      onChange={(e) => this.handleChange('postalCode', e)}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      style={{ marginLeft: '10px', marginBottom: '32px' }}
-                      margin="dense"
-                      id="country"
-                      label="Country"
-                      onChange={(e) => this.handleChange('country', e)}
-                      fullWidth
-                    />
-                  </Grid>
-                </Grid>
+          {/* Contact Details Component */}
 
-              </DialogContent>
+          <ContactDetails
+            viewContact={this.state.viewContact}
+            viewContactDetails={this.viewContactDetails}
+            activeContact={this.state.activeContact}
+          />
 
-              <DialogActions>
-                <Button onClick={this.createContactDialogClose} color="primary">
-                  Cancel
-                                </Button>
-                <Button type="submit" color="primary">
-                  Save
-                                </Button>
-              </DialogActions>
-            </form>
-          </Dialog>
+          {/* Add Contacts Component */}
 
+          <AddContact
+            createContact={this.state.createContact}
+            createContactFunc={this.createContactFunc}
+            showSpinner={this.state.showSpinner}
+            handleChange={this.handleChange}
+            createContactDialog={this.createContactDialog}
+          />
 
         </div>
 
