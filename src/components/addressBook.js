@@ -20,8 +20,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import styles from './styles/addressBookStyle';
 import decode from 'jwt-decode';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Navbar from './navbar'
-import DeleteContact from './deleteContact';
 import ContactDetails from './contactDetails';
 import Tooltip from '@material-ui/core/Tooltip';
 import Menu from '@material-ui/core/Menu';
@@ -31,7 +29,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ContactIcon from '@material-ui/icons/Contacts';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Navbar from './navbar'
 import AddContact from './addContact';
+import EditContact from './editContact';
+import DeleteContact from './deleteContact';
 
 const StyledMenu = withStyles({
   paper: {
@@ -71,6 +72,7 @@ class addressBook extends Component {
       createContact: false,
       viewContact: false,
       deleteContact: false,
+      editContact: false,
       showSpinner: false,
       anchorEl: null,
       firstName: '',
@@ -156,7 +158,7 @@ class addressBook extends Component {
         }))
   }
 
-  deleteContactfunc = (row) => {
+  deleteContactFunc = (row) => {
 
     this.setState({
       showSpinner: true
@@ -180,6 +182,34 @@ class addressBook extends Component {
           hideProgressBar: true,
           draggable: false,
         }))
+  }
+
+  editContactFunc = (row) => {
+    this.setState({
+      showSpinner: true
+    })
+
+    setTimeout(() => {
+      this.setState({ showSpinner: false });
+      this.getAllContacts()
+    }, 2000)
+
+    fetch('/update-contact', {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(
+        toast.info("Successfully Updated!", {
+          hideProgressBar: true,
+          draggable: false,
+        }))
+  }
+
+  editContactDialog = () => {
+    this.setState({ editContact: !this.state.editContact })
   }
 
   viewContactDetails = () => {
@@ -223,7 +253,7 @@ class addressBook extends Component {
           {/* Navbar Component  */}
 
           <Navbar />
-          
+
           {/* Table Header  */}
 
           <Column flexGrow={1}>
@@ -233,10 +263,10 @@ class addressBook extends Component {
                 <AppBar className={classes.searchBar} position="static" color="default" elevation={0}>
                   <Toolbar>
                     <Grid container spacing={2} alignItems="center">
-                      <Grid item>
+                      <Grid item={true}>
                         <SearchIcon className={classes.block} color="inherit" />
                       </Grid>
-                      <Grid item xs>
+                      <Grid>
                         <TextField
                           fullWidth
                           placeholder="Search by First name or Last name"
@@ -247,7 +277,7 @@ class addressBook extends Component {
                           onChange={(e) => this.handleSearch(e)}
                         />
                       </Grid>
-                      <Grid item>
+                      <Grid>
                         <Button variant="contained" color="primary" className={classes.addUser} onClick={this.createContactDialog}>
                           Create contact
                         </Button>
@@ -313,7 +343,7 @@ class addressBook extends Component {
                                       </ListItemIcon>
                                       <ListItemText
                                         primary="Edit"
-                                        onClick={this.handleClickOpen}
+                                        onClick={this.editContactDialog}
                                       />
                                     </StyledMenuItem>
                                     <StyledMenuItem>
@@ -372,7 +402,7 @@ class addressBook extends Component {
                                     </ListItemIcon>
                                     <ListItemText
                                       primary="Edit"
-                                      onClick={this.handleClickOpen}
+                                      onClick={this.editContactDialog}
                                     />
                                   </StyledMenuItem>
                                   <StyledMenuItem>
@@ -400,15 +430,14 @@ class addressBook extends Component {
 
           {/* End Table  */}
 
+          {/* Add Contacts Component */}
 
-          {/* Delete Contact Component */}
-
-          <DeleteContact
-            deleteContactfunc={this.deleteContactfunc}
-            deleteContact={this.state.deleteContact}
+          <AddContact
+            createContact={this.state.createContact}
+            createContactFunc={this.createContactFunc}
             showSpinner={this.state.showSpinner}
-            removeContact={this.removeContact}
-            row={this.state.activeContact}
+            handleChange={this.handleChange}
+            createContactDialog={this.createContactDialog}
           />
 
           {/* Contact Details Component */}
@@ -419,15 +448,33 @@ class addressBook extends Component {
             activeContact={this.state.activeContact}
           />
 
-          {/* Add Contacts Component */}
+          {/* Delete Contact Component */}
 
-          <AddContact
-            createContact={this.state.createContact}
-            createContactFunc={this.createContactFunc}
+          <DeleteContact
+            deleteContactFunc={this.deleteContactFunc}
+            deleteContact={this.state.deleteContact}
             showSpinner={this.state.showSpinner}
-            handleChange={this.handleChange}
-            createContactDialog={this.createContactDialog}
+            removeContact={this.removeContact}
+            row={this.state.activeContact}
           />
+
+          {/* Edit Contact Component */}
+          {this.state.activeContact != '' ?
+            <EditContact
+              editContactFunc={this.editContactFunc}
+              editContactDialog={this.editContactDialog}
+              editContact={this.state.editContact}
+              showSpinner={this.state.showSpinner}
+              handleChange={this.handleChange}
+              row={this.state.activeContact}
+            />
+            :
+            null}
+          }
+
+
+
+
 
         </div>
 

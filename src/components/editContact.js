@@ -14,6 +14,25 @@ import 'react-toastify/dist/ReactToastify.css';
 import styles from './styles/addressBookStyle';
 
 class addressBook extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            firstName: props.row.first_name,
+            lastName: props.row.last_name,
+            email: props.row.email,
+            mobileNumber: props.row.mobile_phone,
+            homePhone: props.row.home_phone,
+            workPhone: props.row.work_phone,
+            city: props.row.city,
+            state: props.row.state_or_province,
+            postalCode: props.row.postal_code,
+            country: props.row.country,
+        }
+    }
+
+    handleChange = (label, e) => {
+        this.setState({ [label]: e.target.value })
+    }
 
     render() {
 
@@ -22,13 +41,17 @@ class addressBook extends Component {
         return (
             <React.Fragment>
 
-                <Dialog open={this.props.createContact} onClose={this.props.createContactDialog} aria-labelledby="form-dialog-title">
+
+                {console.log(this.props.row.id)}
+                <Dialog open={this.props.editContact} onClose={this.props.editContactDialog} aria-labelledby="form-dialog-title">
                     <ToastContainer
                         enableMultiContainer
                         position={toast.POSITION.TOP_RIGHT}
                     />
 
-                    <DialogTitle id="form-dialog-title">Create new contact</DialogTitle>
+                    <DialogTitle id="form-dialog-title">Edit Contact Details
+
+                    </DialogTitle>
                     <div className={this.props.showSpinner ? classes.loader : classes.hideLoader}>
                         <Column horizontal="center" style={{ marginTop: '213px', marginLeft: '308px' }}>
 
@@ -38,110 +61,120 @@ class addressBook extends Component {
 
                         </Column>
                     </div>
-                    <form onSubmit={this.props.createContactFunc}>
+                    <form onSubmit={this.props.editContactFunc}>
                         <DialogContent>
                             <Grid container alignItems='center'>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginRight: '10px', marginBottom: '32px' }}
                                         autoFocus
                                         margin="dense"
                                         id="name"
+                                        value={this.state.firstName}
                                         label="First Name"
-                                        onChange={(e) => this.props.handleChange('firstName', e)}
+                                        onChange={(e) => this.handleChange('firstName', e)}
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginLeft: '10px', marginBottom: '32px' }}
                                         margin="dense"
                                         id="name"
+                                        value={this.state.lastName}
                                         label="Last Name"
-                                        onChange={(e) => this.props.handleChange('lastName', e)}
+                                        onChange={(e) => this.handleChange('lastName', e)}
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid item={true} xs={12}>
                                     <TextField
                                         style={{ marginBottom: '32px' }}
                                         margin="dense"
                                         id="email"
                                         label="Email Address"
                                         required
+                                        value={this.state.email}
                                         InputLabelProps={{ required: false }}
                                         type="email"
-                                        onChange={(e) => this.props.handleChange('email', e)}
+                                        onChange={(e) => this.handleChange('email', e)}
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item={true} xs={12} sm={4}>
                                     <TextField
                                         style={{ marginLeft: '-10px', marginBottom: '32px' }}
                                         margin="dense"
                                         id="mobilenumber"
+                                        value={this.state.mobileNumber}
                                         label="Mobile Number"
-                                        onChange={(e) => this.props.handleChange('mobileNumber', e)}
+                                        onChange={(e) => this.handleChange('mobileNumber', e)}
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item={true} xs={12} sm={4}>
                                     <TextField
                                         style={{ marginRight: '10px', marginBottom: '32px' }}
                                         margin="dense"
                                         id="homePhone"
+                                        value={this.state.homePhone}
                                         label="Home Phone"
-                                        onChange={(e) => this.props.handleChange('homePhone', e)}
+                                        onChange={(e) => this.handleChange('homePhone', e)}
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item={true} xs={12} sm={4}>
                                     <TextField
                                         style={{ marginLeft: '10px', marginBottom: '32px' }}
                                         margin="dense"
                                         id="workPhone"
+                                        value={this.state.workPhone}
                                         label="Work Phone"
-                                        onChange={(e) => this.props.handleChange('workPhone', e)}
+                                        onChange={(e) => this.handleChange('workPhone', e)}
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginRight: '10px', marginBottom: '32px' }}
                                         margin="dense"
                                         id="city"
+                                        value={this.state.city}
                                         label="City"
-                                        onChange={(e) => this.props.handleChange('city', e)}
+                                        onChange={(e) => this.handleChange('city', e)}
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginLeft: '10px', marginBottom: '32px' }}
                                         margin="dense"
                                         id="state"
+                                        value={this.state.state}
                                         label="State or Province"
-                                        onChange={(e) => this.props.handleChange('state', e)}
+                                        onChange={(e) => this.handleChange('state', e)}
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginRight: '10px', marginBottom: '32px' }}
                                         margin="dense"
                                         id="postalCode"
+                                        value={this.state.postalCode}
                                         label="Postal Code"
-                                        onChange={(e) => this.props.handleChange('postalCode', e)}
+                                        onChange={(e) => this.handleChange('postalCode', e)}
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginLeft: '10px', marginBottom: '32px' }}
                                         margin="dense"
                                         id="country"
+                                        value={this.state.country}
                                         label="Country"
-                                        onChange={(e) => this.props.handleChange('country', e)}
+                                        onChange={(e) => this.handleChange('country', e)}
                                         fullWidth
                                     />
                                 </Grid>
@@ -150,7 +183,7 @@ class addressBook extends Component {
                         </DialogContent>
 
                         <DialogActions>
-                            <Button onClick={this.props.createContactDialog} color="primary">
+                            <Button onClick={this.props.editContactDialog} color="primary">
                                 Cancel
                             </Button>
                             <Button type="submit" color="primary">

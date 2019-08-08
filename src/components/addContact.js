@@ -41,7 +41,7 @@ class addressBook extends Component {
                     <form onSubmit={this.props.createContactFunc}>
                         <DialogContent>
                             <Grid container alignItems='center'>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginRight: '10px', marginBottom: '32px' }}
                                         autoFocus
@@ -52,7 +52,7 @@ class addressBook extends Component {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginLeft: '10px', marginBottom: '32px' }}
                                         margin="dense"
@@ -62,7 +62,7 @@ class addressBook extends Component {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid item={true} xs={12}>
                                     <TextField
                                         style={{ marginBottom: '32px' }}
                                         margin="dense"
@@ -75,7 +75,7 @@ class addressBook extends Component {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item={true} xs={12} sm={4}>
                                     <TextField
                                         style={{ marginLeft: '-10px', marginBottom: '32px' }}
                                         margin="dense"
@@ -85,7 +85,7 @@ class addressBook extends Component {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item={true} xs={12} sm={4}>
                                     <TextField
                                         style={{ marginRight: '10px', marginBottom: '32px' }}
                                         margin="dense"
@@ -95,7 +95,7 @@ class addressBook extends Component {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item={true} xs={12} sm={4}>
                                     <TextField
                                         style={{ marginLeft: '10px', marginBottom: '32px' }}
                                         margin="dense"
@@ -105,7 +105,7 @@ class addressBook extends Component {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginRight: '10px', marginBottom: '32px' }}
                                         margin="dense"
@@ -115,7 +115,7 @@ class addressBook extends Component {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginLeft: '10px', marginBottom: '32px' }}
                                         margin="dense"
@@ -125,7 +125,7 @@ class addressBook extends Component {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginRight: '10px', marginBottom: '32px' }}
                                         margin="dense"
@@ -135,7 +135,7 @@ class addressBook extends Component {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item={true} xs={12} sm={6}>
                                     <TextField
                                         style={{ marginLeft: '10px', marginBottom: '32px' }}
                                         margin="dense"

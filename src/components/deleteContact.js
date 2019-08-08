@@ -44,7 +44,7 @@ class RemoveContact extends Component {
                         <Button onClick={this.props.removeContact} color="primary" autoFocus>
                             Cancel
                     </Button>
-                        <Button onClick={() => this.props.deleteContactfunc(this.props.row)} color="primary" >
+                        <Button onClick={() => this.props.deleteContactFunc(this.props.row)} color="primary" >
                             Delete
                     </Button>
                     </DialogActions>
