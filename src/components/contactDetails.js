@@ -16,8 +16,6 @@ import EmailIcon from '@material-ui/icons/Email';
 import LocationIcon from '@material-ui/icons/LocationOn';
 import PhoneIcon from '@material-ui/icons/Phone';
 import AccountCircle from '@material-ui/icons/AccountCircle'
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
 
 
 const styles = theme => ({
@@ -40,7 +38,7 @@ const styles = theme => ({
 });
 
 const DialogTitle = withStyles(styles)(props => {
-    const { children, classes, onClose, EnableEdit } = props;
+    const { children, classes, onClose, editContactDialog } = props;
 
     return (
         <MuiDialogTitle disableTypography className={classes.root}>
@@ -52,18 +50,16 @@ const DialogTitle = withStyles(styles)(props => {
                     </IconButton>
                 </Tooltip>
             ) : null}
-            {onClose ? (
-                <Tooltip title="Edit Contact" placement="top">
-                    <IconButton
-                        aria-label="more"
-                        aria-haspopup="true"
-                        className={classes.editButton}
-                        onClick={EnableEdit}
-                    >
-                        <EditIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : null}
+            <Tooltip title="Edit Contact" placement="top">
+                <IconButton
+                    aria-label="more"
+                    aria-haspopup="true"
+                    className={classes.editButton}
+                    onClick={props.editContactDialog}
+                >
+                    <EditIcon />
+                </IconButton>
+            </Tooltip>
         </MuiDialogTitle>
     );
 });
@@ -76,48 +72,16 @@ const DialogContent = withStyles(theme => ({
 
 export default function ContactDetails(props) {
 
-    const [edit, setedit] = React.useState(false);
-    const [firstName, setfirstName] = React.useState('');
-
-    function EnableEdit() {
-        setedit(!edit)
-        setfirstName(props.activeContact.first_name)
-    }
     return (
 
         <React.Fragment>
             <Dialog fullWidth onClose={props.viewContactDetails} aria-labelledby="customized-dialog-title" open={props.viewContact}>
-                <DialogTitle EnableEdit={EnableEdit} id="customized-dialog-title" onClose={props.viewContactDetails}>
+                <DialogTitle id="customized-dialog-title" onClose={props.viewContactDetails}>
                     <ListItem>
                         <ListItemAvatar>
                             <AccountCircle style={{ color: '#077ce8', fontSize: '45px' }} />
                         </ListItemAvatar>
-                        {edit ?
-                            <Grid container alignItems='center' spacing={3}>
-                                <Grid item={true} xs={8} sm={4}>
-                                    <TextField
-                                        value={firstName}
-                                        autoFocus
-                                        margin="dense"
-                                        id="name"
-                                        label="First Name"
-                                        onChange={(e) => this.props.handleChange('firstName', e)}
-                                        fullWidth
-                                    />
-                                </Grid>
-                                <Grid item={true} xs={8} sm={4}>
-                                    <TextField
-                                        margin="dense"
-                                        id="name"
-                                        label="Last Name"
-                                        onChange={(e) => this.props.handleChange('lastName', e)}
-                                        fullWidth
-                                    />
-                                </Grid>
-                            </Grid>
-                            :
-                            <ListItemText>{props.activeContact.first_name} {props.activeContact.last_name}</ListItemText>}
-
+                        <ListItemText>{props.activeContact.first_name} {props.activeContact.last_name}</ListItemText>
                     </ListItem>
                 </DialogTitle>
                 <DialogContent dividers>

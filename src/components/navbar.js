@@ -34,6 +34,7 @@ class Navbar extends Component {
                         aria-controls="menu-appbar"
                         aria-haspopup="true"
                         color="inherit"
+                        onClick={this.props.viewContactDetails}
                     >
                         <Tooltip title="Profile" placement="top">
                             <AccountCircle />

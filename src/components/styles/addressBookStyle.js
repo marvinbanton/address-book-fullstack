@@ -71,8 +71,12 @@ const styles = theme => ({
             backgroundColor: '#efefef'
         }
     },
-    dialog: {
-        width: ''
+    filter: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    toggle: {
+        cursor: 'pointer',
     }
 });
 

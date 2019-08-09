@@ -17,6 +17,7 @@ class addressBook extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            id: props.row.id,
             firstName: props.row.first_name,
             lastName: props.row.last_name,
             email: props.row.email,
@@ -40,9 +41,7 @@ class addressBook extends Component {
 
         return (
             <React.Fragment>
-
-
-                {console.log(this.props.row.id)}
+                {console.log(this.props.row)}
                 <Dialog open={this.props.editContact} onClose={this.props.editContactDialog} aria-labelledby="form-dialog-title">
                     <ToastContainer
                         enableMultiContainer
@@ -53,15 +52,15 @@ class addressBook extends Component {
 
                     </DialogTitle>
                     <div className={this.props.showSpinner ? classes.loader : classes.hideLoader}>
-                        <Column horizontal="center" style={{ marginTop: '213px', marginLeft: '308px' }}>
+                        <Column item={true} horizontal="center" style={{ marginTop: '213px', marginLeft: '308px' }}>
 
-                            <Row item xs={12} sm={6} className={classes.loader} horizontal="center" >
+                            <Row item={true} xs={12} sm={6} className={classes.loader} horizontal="center" >
                                 <CircularProgress className={classes.spinner} />
                             </Row>
 
                         </Column>
                     </div>
-                    <form onSubmit={this.props.editContactFunc}>
+                    <form onSubmit={(e) => this.props.editContactFunc(e, this.state)}>
                         <DialogContent>
                             <Grid container alignItems='center'>
                                 <Grid item={true} xs={12} sm={6}>

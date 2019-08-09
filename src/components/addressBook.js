@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { Column, Row } from "simple-flexbox";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -29,6 +29,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ContactIcon from '@material-ui/icons/Contacts';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Filter from '@material-ui/icons/KeyboardArrowDown';
 import Navbar from './navbar'
 import AddContact from './addContact';
 import EditContact from './editContact';
@@ -184,18 +185,22 @@ class addressBook extends Component {
         }))
   }
 
-  editContactFunc = (row) => {
+  editContactFunc = (e, row) => {
+    e.preventDefault();
+
     this.setState({
       showSpinner: true
     })
 
     setTimeout(() => {
       this.setState({ showSpinner: false });
+      this.editContactDialog()
       this.getAllContacts()
     }, 2000)
 
-    fetch('/update-contact', {
-      method: 'GET',
+    fetch(`/update-contact`, {
+      method: 'POST',
+      body: JSON.stringify(row),
       headers: {
         'content-type': 'application/json'
       }
@@ -208,8 +213,16 @@ class addressBook extends Component {
         }))
   }
 
+  sortby = () => {
+    this.state.contacts.reverse();
+  }
+
   editContactDialog = () => {
     this.setState({ editContact: !this.state.editContact })
+    this.setState({ anchorEl: null });
+    if (this.state.editContact) {
+      this.setState({ activeContact: '' });
+    }
   }
 
   viewContactDetails = () => {
@@ -252,7 +265,11 @@ class addressBook extends Component {
         <div className={classes.root}>
           {/* Navbar Component  */}
 
-          <Navbar />
+          <Navbar
+            viewContact={this.state.viewContact}
+            viewContactDetails={this.viewContactDetails}
+            activeContact={this.state.activeContact}
+          />
 
           {/* Table Header  */}
 
@@ -266,7 +283,7 @@ class addressBook extends Component {
                       <Grid item={true}>
                         <SearchIcon className={classes.block} color="inherit" />
                       </Grid>
-                      <Grid>
+                      <Grid item sm>
                         <TextField
                           fullWidth
                           placeholder="Search by First name or Last name"
@@ -277,7 +294,7 @@ class addressBook extends Component {
                           onChange={(e) => this.handleSearch(e)}
                         />
                       </Grid>
-                      <Grid>
+                      <Grid item>
                         <Button variant="contained" color="primary" className={classes.addUser} onClick={this.createContactDialog}>
                           Create contact
                         </Button>
@@ -295,7 +312,15 @@ class addressBook extends Component {
                     <TableHead>
                       <TableRow>
                         <TableCell>First name</TableCell>
-                        <TableCell>Last name</TableCell>
+                        <TableCell className={classes.filter}>
+                          Last name
+                          <Tooltip title="Sort by Last name" placement="top">
+                            <Filter
+                              className={classes.toggle}
+                              onClick={this.sortby}
+                            />
+                          </Tooltip>
+                        </TableCell>
                         <TableCell>Phonenumber</TableCell>
                         <TableCell>Action</TableCell>
                       </TableRow>
@@ -312,14 +337,16 @@ class addressBook extends Component {
                                 <TableCell>{row.last_name}</TableCell>
                                 <TableCell>{row.mobile_phone}</TableCell>
                                 <TableCell>
-                                  <IconButton
-                                    aria-label="more"
-                                    aria-controls="long-menu"
-                                    aria-haspopup="true"
-                                    onClick={(e) => this.handleClick(e, row)}
-                                  >
-                                    <MoreVertIcon />
-                                  </IconButton>
+                                  <Tooltip title="More actions" placement="right">
+                                    <IconButton
+                                      aria-label="more"
+                                      aria-controls="long-menu"
+                                      aria-haspopup="true"
+                                      onClick={(e) => this.handleClick(e, row)}
+                                    >
+                                      <MoreVertIcon />
+                                    </IconButton>
+                                  </Tooltip>
 
                                   <StyledMenu
                                     id="customized-menu"
@@ -328,33 +355,27 @@ class addressBook extends Component {
                                     open={Boolean(this.state.anchorEl)}
                                     onClose={this.handleDialogClose}
                                   >
-                                    <StyledMenuItem>
+                                    <StyledMenuItem onClick={this.viewContactDetails}>
                                       <ListItemIcon>
                                         <ContactIcon />
                                       </ListItemIcon>
-                                      <ListItemText
-                                        primary="Contact Details"
-                                        onClick={this.viewContactDetails}
-                                      />
+                                      <ListItemText primary="Contact Details" />
                                     </StyledMenuItem>
-                                    <StyledMenuItem>
+
+                                    <StyledMenuItem onClick={this.editContactDialog} >
                                       <ListItemIcon>
                                         <EditIcon />
                                       </ListItemIcon>
-                                      <ListItemText
-                                        primary="Edit"
-                                        onClick={this.editContactDialog}
-                                      />
+                                      <ListItemText primary="Edit" />
                                     </StyledMenuItem>
-                                    <StyledMenuItem>
+
+                                    <StyledMenuItem onClick={this.removeContact}>
                                       <ListItemIcon>
                                         <DeleteIcon />
                                       </ListItemIcon>
-                                      <ListItemText
-                                        primary="Delete"
-                                        onClick={this.removeContact}
-                                      />
+                                      <ListItemText primary="Delete" />
                                     </StyledMenuItem>
+
                                   </StyledMenu>
                                 </TableCell>
                               </TableRow>
@@ -387,32 +408,25 @@ class addressBook extends Component {
                                   open={Boolean(this.state.anchorEl)}
                                   onClose={this.handleDialogClose}
                                 >
-                                  <StyledMenuItem>
+                                  <StyledMenuItem onClick={this.viewContactDetails}>
                                     <ListItemIcon>
                                       <ContactIcon />
                                     </ListItemIcon>
-                                    <ListItemText
-                                      primary="Contact Details"
-                                      onClick={this.viewContactDetails}
-                                    />
+                                    <ListItemText primary="Contact Details" />
                                   </StyledMenuItem>
-                                  <StyledMenuItem>
+
+                                  <StyledMenuItem onClick={this.editContactDialog} >
                                     <ListItemIcon>
                                       <EditIcon />
                                     </ListItemIcon>
-                                    <ListItemText
-                                      primary="Edit"
-                                      onClick={this.editContactDialog}
-                                    />
+                                    <ListItemText primary="Edit" />
                                   </StyledMenuItem>
-                                  <StyledMenuItem>
+
+                                  <StyledMenuItem onClick={this.removeContact}>
                                     <ListItemIcon>
                                       <DeleteIcon />
                                     </ListItemIcon>
-                                    <ListItemText
-                                      primary="Delete"
-                                      onClick={this.removeContact}
-                                    />
+                                    <ListItemText primary="Delete" />
                                   </StyledMenuItem>
                                 </StyledMenu>
                               </TableCell>
@@ -469,7 +483,7 @@ class addressBook extends Component {
               row={this.state.activeContact}
             />
             :
-            null}
+            null
           }
 
 
