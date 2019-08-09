@@ -36,6 +36,7 @@ import Navbar from './navbar';
 import AddContact from './addContact';
 import EditContact from './editContact';
 import DeleteContact from './deleteContact';
+import AddToGroup from './addToGroup';
 
 const StyledMenu = withStyles({
   paper: {
@@ -76,6 +77,7 @@ class addressBook extends Component {
       viewContact: false,
       deleteContact: false,
       editContact: false,
+      addToGroup: false,
       showSpinner: false,
       anchorEl: null,
       firstName: '',
@@ -221,6 +223,11 @@ class addressBook extends Component {
     })
   }
 
+  addToGroupDialog = () => {
+    this.setState({ addToGroup: !this.state.addToGroup })
+    this.setState({ anchorEl: null });
+  }
+
   editContactDialog = () => {
     this.setState({ editContact: !this.state.editContact })
     this.setState({ anchorEl: null });
@@ -254,7 +261,6 @@ class addressBook extends Component {
   handleClick = (e, row) => {
     this.setState({ anchorEl: e.currentTarget })
     this.setState({ activeContact: row })
-    console.log(row)
   }
 
   handleDialogClose = () => {
@@ -312,7 +318,7 @@ class addressBook extends Component {
                   <Typography color="textSecondary" align="center" style={{ display: 'none' }}>
                     Add contacts...
                   </Typography>
-                  {console.log(this.sortByFunc)}
+
                   <Table className={classes.table}>
                     <TableHead>
                       <TableRow>
@@ -369,7 +375,7 @@ class addressBook extends Component {
                                       <ListItemText primary="Contact Details" />
                                     </StyledMenuItem>
 
-                                    <StyledMenuItem onClick={this.viewContactDetails}>
+                                    <StyledMenuItem onClick={this.addToGroupDialog}>
                                       <ListItemIcon>
                                         <GroupAdd />
                                       </ListItemIcon>
@@ -430,7 +436,7 @@ class addressBook extends Component {
                                     <ListItemText primary="Contact Details" />
                                   </StyledMenuItem>
 
-                                  <StyledMenuItem onClick={this.viewContactDetails}>
+                                  <StyledMenuItem onClick={this.addToGroupDialog}>
                                     <ListItemIcon>
                                       <GroupAdd />
                                     </ListItemIcon>
@@ -458,62 +464,68 @@ class addressBook extends Component {
                       })}
                     </TableBody>
                   </Table>
+                  {/* End Table  */}
 
                 </div>
+                {/* End Content Wrapper  */}
+
               </Paper>
             </Row>
           </Column>
-
-          {/* End Table  */}
-
-          {/* Add Contacts Component */}
-
-          <AddContact
-            createContact={this.state.createContact}
-            createContactFunc={this.createContactFunc}
-            showSpinner={this.state.showSpinner}
-            handleChange={this.handleChange}
-            createContactDialog={this.createContactDialog}
-          />
-
-          {/* Contact Details Component */}
-
-          <ContactDetails
-            viewContact={this.state.viewContact}
-            viewContactDetails={this.viewContactDetails}
-            activeContact={this.state.activeContact}
-          />
-
-          {/* Delete Contact Component */}
-
-          <DeleteContact
-            deleteContactFunc={this.deleteContactFunc}
-            deleteContact={this.state.deleteContact}
-            showSpinner={this.state.showSpinner}
-            removeContact={this.removeContact}
-            row={this.state.activeContact}
-          />
-
-          {/* Edit Contact Component */}
-          {this.state.activeContact != '' ?
-            <EditContact
-              editContactFunc={this.editContactFunc}
-              editContactDialog={this.editContactDialog}
-              editContact={this.state.editContact}
-              showSpinner={this.state.showSpinner}
-              handleChange={this.handleChange}
-              row={this.state.activeContact}
-            />
-            :
-            null
-          }
-
-
-
-
+          {/* End Table Header */}
 
         </div>
 
+
+        {/* Add Contacts Component */}
+
+        <AddContact
+          createContact={this.state.createContact}
+          createContactFunc={this.createContactFunc}
+          showSpinner={this.state.showSpinner}
+          handleChange={this.handleChange}
+          createContactDialog={this.createContactDialog}
+        />
+
+        {/* Contact Details Component */}
+
+        <ContactDetails
+          viewContact={this.state.viewContact}
+          viewContactDetails={this.viewContactDetails}
+          activeContact={this.state.activeContact}
+        />
+
+        {/* Delete Contact Component */}
+
+        <DeleteContact
+          deleteContactFunc={this.deleteContactFunc}
+          deleteContact={this.state.deleteContact}
+          showSpinner={this.state.showSpinner}
+          removeContact={this.removeContact}
+          row={this.state.activeContact}
+        />
+
+        {/* Edit Contact Component */}
+
+        {this.state.activeContact != '' ?
+          <EditContact
+            editContactFunc={this.editContactFunc}
+            editContactDialog={this.editContactDialog}
+            editContact={this.state.editContact}
+            showSpinner={this.state.showSpinner}
+            handleChange={this.handleChange}
+            row={this.state.activeContact}
+          />
+          :
+          null
+        }
+
+        {/* Add To Group Component */}
+
+        <AddToGroup
+          addToGroup={this.state.addToGroup}
+          addToGroupDialog={this.addToGroupDialog}
+        />
 
 
 

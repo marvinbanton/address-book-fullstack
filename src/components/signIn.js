@@ -19,6 +19,7 @@ class signIn extends Component {
         this.state = {
             username: ' ',
             password: ' ',
+            showSpinner: false
         }
     }
 
@@ -42,7 +43,6 @@ class signIn extends Component {
         })
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 if (res.error) {
                     return toast.error(res.error, {
                         hideProgressBar: true,
@@ -58,7 +58,7 @@ class signIn extends Component {
                     setTimeout(() => {
                         this.setState({ showSpinner: false });
                         this.props.history.push('./addressbook')
-                    }, 3000)
+                    }, 2000)
                 }
             });
     }
@@ -92,7 +92,7 @@ class signIn extends Component {
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Sign in
-        </Typography>
+                    </Typography>
                     <form className={classes.form} onSubmit={this.login}>
                         <TextField
                             style={{ marginBottom: '-3px' }}

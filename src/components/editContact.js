@@ -41,7 +41,7 @@ class addressBook extends Component {
 
         return (
             <React.Fragment>
-                {console.log(this.props.row)}
+                
                 <Dialog open={this.props.editContact} onClose={this.props.editContactDialog} aria-labelledby="form-dialog-title">
                     <ToastContainer
                         enableMultiContainer
