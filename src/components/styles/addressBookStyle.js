@@ -37,12 +37,14 @@ const styles = theme => ({
         display: 'block',
     },
     contentWrapper: {
-        maxHeight: 540,
+        maxHeight: 585,
+        minHeight: 585,
         overflow: 'auto',
     },
     table: {
         minWidth: 1195,
-    },
+        maxWidth: 1195
+    },   
     addUser: {
         marginRight: 2,
         backgroundColor: '#077ce8',

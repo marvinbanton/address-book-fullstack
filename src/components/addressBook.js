@@ -30,7 +30,9 @@ import ContactIcon from '@material-ui/icons/Contacts';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Filter from '@material-ui/icons/KeyboardArrowDown';
-import Navbar from './navbar'
+import AccountCircle from '@material-ui/icons/AccountCircle'
+import GroupAdd from '@material-ui/icons/Group';
+import Navbar from './navbar';
 import AddContact from './addContact';
 import EditContact from './editContact';
 import DeleteContact from './deleteContact';
@@ -213,8 +215,10 @@ class addressBook extends Component {
         }))
   }
 
-  sortby = () => {
-    this.state.contacts.reverse();
+  sortByFunc = () => {
+    this.setState({
+      contacts: this.state.contacts.reverse()
+    })
   }
 
   editContactDialog = () => {
@@ -255,6 +259,7 @@ class addressBook extends Component {
 
   handleDialogClose = () => {
     this.setState({ anchorEl: null });
+    this.setState({ activeContact: '' });
   }
 
   render() {
@@ -307,7 +312,7 @@ class addressBook extends Component {
                   <Typography color="textSecondary" align="center" style={{ display: 'none' }}>
                     Add contacts...
                   </Typography>
-
+                  {console.log(this.sortByFunc)}
                   <Table className={classes.table}>
                     <TableHead>
                       <TableRow>
@@ -317,8 +322,9 @@ class addressBook extends Component {
                           <Tooltip title="Sort by Last name" placement="top">
                             <Filter
                               className={classes.toggle}
-                              onClick={this.sortby}
+                              onClick={this.sortByFunc}
                             />
+
                           </Tooltip>
                         </TableCell>
                         <TableCell>Phonenumber</TableCell>
@@ -331,7 +337,8 @@ class addressBook extends Component {
                           if (row.first_name.toLowerCase().includes(this.state.search.toLowerCase()) || row.last_name.toLowerCase().includes(this.state.search.toLowerCase())) {
                             return (
                               <TableRow key={row.first_name} className={classes.contacts}>
-                                <TableCell component="th" scope="row">
+                                <TableCell component="th" scope="row" className={classes.filter}>
+                                  <AccountCircle style={{ color: '#077ce8', fontSize: '40px', margin: '10px' }} />
                                   {row.first_name}
                                 </TableCell>
                                 <TableCell>{row.last_name}</TableCell>
@@ -362,6 +369,13 @@ class addressBook extends Component {
                                       <ListItemText primary="Contact Details" />
                                     </StyledMenuItem>
 
+                                    <StyledMenuItem onClick={this.viewContactDetails}>
+                                      <ListItemIcon>
+                                        <GroupAdd />
+                                      </ListItemIcon>
+                                      <ListItemText primary="Add To Group" />
+                                    </StyledMenuItem>
+
                                     <StyledMenuItem onClick={this.editContactDialog} >
                                       <ListItemIcon>
                                         <EditIcon />
@@ -384,7 +398,8 @@ class addressBook extends Component {
                         } else {
                           return (
                             <TableRow key={row.first_name} className={classes.contacts}>
-                              <TableCell component="th" scope="row">
+                              <TableCell component="th" scope="row" className={classes.filter}>
+                                <AccountCircle style={{ color: '#077ce8', fontSize: '40px', margin: '10px' }} />
                                 {row.first_name}
                               </TableCell>
                               <TableCell>{row.last_name}</TableCell>
@@ -413,6 +428,13 @@ class addressBook extends Component {
                                       <ContactIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Contact Details" />
+                                  </StyledMenuItem>
+
+                                  <StyledMenuItem onClick={this.viewContactDetails}>
+                                    <ListItemIcon>
+                                      <GroupAdd />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Add To Group" />
                                   </StyledMenuItem>
 
                                   <StyledMenuItem onClick={this.editContactDialog} >

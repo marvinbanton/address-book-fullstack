@@ -55,7 +55,7 @@ const DialogTitle = withStyles(styles)(props => {
                     aria-label="more"
                     aria-haspopup="true"
                     className={classes.editButton}
-                    onClick={props.editContactDialog}
+                    onClick={editContactDialog}
                 >
                     <EditIcon />
                 </IconButton>
